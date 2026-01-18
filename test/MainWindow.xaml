@@ -1,0 +1,173 @@
+<Window x:Class="FenceDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FenceDemo"
+        Height="450"
+        Width="500"
+        Opacity="0.7"
+        AllowDrop="True"
+        Drop="Window_Drop">
+
+    <Window.Resources>
+
+    <Style x:Key="RotatingExpander" TargetType="Expander">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Margin="0 5">
+                        <DockPanel>
+
+                            <!-- HEADER -->
+                            <ToggleButton x:Name="HeaderSite"
+                                          Content="{TemplateBinding Header}"
+                                          DockPanel.Dock="Top"
+                                          Background="#222"
+                                          Foreground="White"
+                                          FontSize="16"
+                                          Padding="10"
+                                          BorderThickness="0"
+                                          HorizontalContentAlignment="Left"
+                                          VerticalContentAlignment="Center">
+
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- PFEIL -->
+                                            <Path x:Name="Arrow"
+                                                  Grid.Column="0"
+                                                  Data="M 0 0 L 8 8 L 16 0"
+                                                  Stroke="White"
+                                                  StrokeThickness="2"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  RenderTransformOrigin="0.5,0.5">
+                                                <Path.RenderTransform>
+                                                    <RotateTransform x:Name="ArrowRotate" Angle="0"/>
+                                                </Path.RenderTransform>
+                                            </Path>
+
+                                            <!-- TEXT -->
+                                            <ContentPresenter Grid.Column="1"
+                                                              VerticalAlignment="Center"
+                                                              Margin="5 0 0 0"/>
+                                        </Grid>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="ArrowRotate"
+                                                        Property="RotateTransform.Angle"
+                                                        Value="180"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <!-- INHALT -->
+                            <ContentPresenter x:Name="ExpandSite"
+                                              Margin="10"
+                                              Visibility="Collapsed"/>
+
+                        </DockPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="FenceDemo"
+                   FontSize="24"
+                   HorizontalAlignment="Center"
+                   Margin="0 0 0 10"/>
+
+        <StackPanel x:Name="AccordionPanel" Grid.Row="1">
+
+            <Expander Header="Dateiliste"
+                      Style="{StaticResource RotatingExpander}"
+                      Expanded="Expander_Expanded">
+
+                <Grid>
+                    <ListBox x:Name="DateiListe"
+                             Margin="0"
+                             Height="200"
+                             AllowDrop="True"
+                             PreviewMouseLeftButtonDown="DateiListe_PreviewMouseLeftButtonDown"
+                             PreviewMouseMove="DateiListe_PreviewMouseMove"
+                             Drop="DateiListe_Drop"
+                             DragLeave="DateiListe_DragLeave"
+                             MouseDoubleClick="DateiListe_MouseDoubleClick">
+
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Öffnen" Click="MenuItem_Open_Click"/>
+                                <MenuItem Header="Löschen" Click="MenuItem_Delete_Click"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <Image Source="{Binding Icon}" Width="24" Height="24" Margin="0 0 10 0"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Path}" FontSize="10" Foreground="Gray"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                    </ListBox>
+                </Grid>
+
+            </Expander>
+
+            <Expander Header="Optionen B"
+                      Style="{StaticResource RotatingExpander}"
+                      Expanded="Expander_Expanded">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Platz für weitere Funktionen"/>
+                </StackPanel>
+            </Expander>
+
+            <Expander Header="Optionen C"
+                      Style="{StaticResource RotatingExpander}"
+                      Expanded="Expander_Expanded">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Noch mehr Platz für Features"/>
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+
+        <Button Grid.Row="2"
+                Content="Zweites Fenster öffnen"
+                Width="200"
+                Height="40"
+                HorizontalAlignment="Center"
+                Margin="0 10 0 0"
+                Click="Button_OpenWindow_Click"/>
+
+    </Grid>
+</Window>
